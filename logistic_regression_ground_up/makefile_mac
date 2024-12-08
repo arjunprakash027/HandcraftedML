@@ -1,0 +1,34 @@
+# Define variables
+PYTHON_VERSION = 3.13
+PYTHON_INCLUDE_DIR = /opt/homebrew/opt/python@$(PYTHON_VERSION)/Frameworks/Python.framework/Versions/$(PYTHON_VERSION)/include/python$(PYTHON_VERSION)
+PYTHON_LIB_DIR = /opt/homebrew/opt/python@$(PYTHON_VERSION)/Frameworks/Python.framework/Versions/$(PYTHON_VERSION)/lib/python$(PYTHON_VERSION)/config-$(PYTHON_VERSION)-darwin
+PYTHON_LIB = /opt/homebrew/opt/python@$(PYTHON_VERSION)/Frameworks/Python.framework/Versions/$(PYTHON_VERSION)/lib/libpython$(PYTHON_VERSION).dylib
+
+# Set compiler flags for C++ (for arm64 architecture)
+CXXFLAGS = -std=c++17 -Wall -g -O3 -fPIC -arch arm64 -I$(PYTHON_INCLUDE_DIR) -I/opt/homebrew/lib/python$(PYTHON_VERSION)/site-packages/pybind11/include -isystem /Library/Developer/CommandLineTools/SDKs/MacOSX15.1.sdk/usr/include/c++/v1/
+LDFLAGS = -L$(PYTHON_LIB_DIR) -lpython$(PYTHON_VERSION) -framework CoreFoundation -ldl
+
+# Define source and object files
+SRCS = LinearModels.cpp logisticRegression.cpp
+OBJS = $(SRCS:.cpp=.o)
+
+# Output shared library name
+TARGET = LinearModels.so
+
+# Default target to build
+all: $(TARGET)
+
+# Rule for building the shared library
+$(TARGET): $(OBJS)
+	$(CXX) $(LDFLAGS) -shared -o $@ $^
+
+# Rule for compiling .cpp files to .o object files
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+# Clean object files and the shared library
+clean:
+	rm -f $(OBJS) $(TARGET)
+
+# Phony targets
+.PHONY: all clean
