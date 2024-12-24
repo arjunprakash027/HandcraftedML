@@ -1,12 +1,30 @@
 #ifndef ARRAY_UTILITIES_HPP
 #define ARRAY_UTILITIES_HPP
 
+#include <iostream>
+
 #include <string>
 #include <vector>
 
 class LogisticRegression {
+    
+    private: 
+        std::vector<double> w;
+        
     public:
-        static int fit (const std::vector<std::vector<double> >& X_Train, const std::vector<double>& Y_Train, double learning_rate, std::size_t epochs); 
+        void set_weights(std::vector<double>& weights) {
+            //std::cout << "Instance address: " << this << std::endl;
+            w = weights;
+        }
+
+        std::vector<double> get_weights() {
+            // The below debugging line ensures this function is called using an instance and is not static
+            //std::cout << "Instance address: " << this << std::endl;
+            return w;
+        }
+
+        int fit (const std::vector<std::vector<double> >& X_Train, const std::vector<double>& Y_Train, double learning_rate, std::size_t epochs); 
+        int predict (const std::vector<double>& X_Test);//std::vector<double> predict (const std::vector<double>& X_Test);
 };
 
 int checks(const std::vector<std::vector<double> >& X_Train, const std::vector<double>& Y_Train);

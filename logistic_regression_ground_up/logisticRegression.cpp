@@ -103,7 +103,6 @@ int LogisticRegression::fit(const std::vector<std::vector<double> >& X_Train, co
     // Initializing the weights for linear function
     std::vector<double> w(XDim, 0.5);
 
-
     for (std::size_t iter = 0; iter < epochs; ++iter) {
         // Calculate the linear estimator value (z = summation(x*w))
         std::vector<double> Z(YSize, 0.0);
@@ -131,7 +130,20 @@ int LogisticRegression::fit(const std::vector<std::vector<double> >& X_Train, co
         }
         std::cout << std::endl;
     }
-    
+
+    // Setting the computed weights so that it could be used for inference
+    // The below calling of function is called without creting a instance of the class even tho the declaration is not static
+    // this behaviour works in pybind but not in native c++, so please be aware to use static methods or instantiate a object while using normal c++
+    LogisticRegression::set_weights(w);
 
     return 0;
+}
+
+int LogisticRegression::predict(const std::vector<double>& X_Test) {
+    std::vector<double> w = LogisticRegression::get_weights();
+    for (const auto& weights : w) {
+        std::cout << weights << " ";
+    }
+
+    return 0;   
 }
