@@ -24,7 +24,7 @@ class LogisticRegression {
         }
 
         int fit (const std::vector<std::vector<double> >& X_Train, const std::vector<double>& Y_Train, double learning_rate, std::size_t epochs); 
-        int predict (const std::vector<double>& X_Test);//std::vector<double> predict (const std::vector<double>& X_Test);
+        std::vector<double> predict (const std::vector< std::vector<double> >& X_Test);//std::vector<double> predict (const std::vector<double>& X_Test);
 };
 
 int checks(const std::vector<std::vector<double> >& X_Train, const std::vector<double>& Y_Train);
