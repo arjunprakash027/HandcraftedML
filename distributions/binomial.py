@@ -38,6 +38,6 @@ def plot_binomial_distribution(dist: list) -> None:
     plt.title(f'Binomial Distribution for n: {n} and p: {probablity}')
     plt.show()
 
-Y = np.random.randint(0,2,100)
+Y = np.random.randint(0,2,4)
 
 plot_binomial_distribution(Y)

@@ -67,7 +67,7 @@ def calculate_entropy(df:pd.DataFrame, feature: str | int, split_val: float, tar
     
     return weighted_entropy
 
-def build_tree(df:pd.DataFrame, feature_list:List, target: str, current_depth: int = 0,max_depth: int = 10) -> None:
+def build_tree(df: pd.DataFrame, feature_list: List, target: str | int, current_depth: int = 0, max_depth: int = 10) -> dict:
     #print(f"Column List: {feature_list} <-> Target: {target} at depth {current_depth}")
 
     if len(df) != 0: #makes sense only if the length of dataframe is not 0
