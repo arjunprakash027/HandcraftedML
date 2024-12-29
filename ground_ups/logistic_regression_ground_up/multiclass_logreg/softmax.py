@@ -11,16 +11,46 @@ def get_dataset() -> pd.DataFrame:
     df = pd.read_csv(f"{path}/updated_pollution_dataset.csv")
     return df
 
+def accuracy(actual:list
+             ,pred:list) -> float:
+    actual = np.array(actual)
+    pred = np.array(pred)
+
+    assert len(actual) == len(pred)
+    return (np.sum(actual == pred) / len(actual))
+
+def precison_recall(actual:list,
+                    pred:list) -> dict:
+    actual = np.array(actual)
+    pred = np.array(pred)
+
+    assert len(actual) == len(pred)
+    
+    pr_by_class = {}
+    for cl in np.unique(actual):
+        tp = np.sum((actual == cl) & (pred == cl))
+        fp = np.sum((actual != cl) & (pred == cl))
+        fn = np.sum((actual == cl) & (pred != cl))
+
+        precision = (tp / (tp + fp))
+        recall = (tp / (tp + fn))
+
+        pr_by_class[cl] = {
+            "precision":precision,
+            "recall":recall
+        }
+
+    return pr_by_class
 
 class SoftmaxRegression:
     def __init__(self, 
                  learning_rate=0.01, 
                  n_epochs = 1000,
-                 l1 = 1) -> None:
+                 l2 = 1) -> None:
         self.learning_rate = learning_rate
         self.n_epochs = n_epochs
         self.w = "Weights are not trained yet"
-        self.l1 = l1
+        self.l2 = l2
         self.losses = []
     
     # Function to onehot encode the target variable for mutlticlass computation of gradient decent
@@ -36,10 +66,6 @@ class SoftmaxRegression:
 
         # You then take exponent of scores since its negative and sum it along each row 
         # You then divide each row with its transposed exponent to normalize it and transpose it back to give its original shape
-
-        # print("Scores", scores)
-        # print("Scores exp", np.exp(scores))
-        # print("Exp of scores",np.sum(np.exp(scores)))
         softmax_out = (np.exp(scores).T / np.sum(np.exp(scores), axis=1)).T 
         return softmax_out
 
@@ -59,11 +85,11 @@ class SoftmaxRegression:
             prob = self.softmax(score)
             
             #print(prob)
-            loss = (-1 / m) * np.sum(y_mat * np.log(prob + epsilon)) 
+            loss = (-1 / m) * np.sum(y_mat * np.log(prob + epsilon)) + ((self.l2/2) * np.sum(self.w * self.w))
             self.losses.append(loss)
-            grad = (-1 / m) * np.dot(X.T, (y_mat - prob)) 
+            grad = (-1 / m) * np.dot(X.T, (y_mat - prob)) + (self.l2 * self.w)
             
-            print("Gradient",grad)
+            #print("Gradient",grad)
             self.w = self.w - (self.learning_rate * grad)
     
     def predict(self,
@@ -81,7 +107,7 @@ if __name__ == '__main__':
     target_list = df['Air Quality'].unique().tolist()
     df['Air Quality'] = df['Air Quality'].apply(lambda x: target_list.index(x))
 
-    Softmax = SoftmaxRegression(learning_rate=1e-5, n_epochs=2)
+    Softmax = SoftmaxRegression(learning_rate=1e-5, n_epochs=50000)
     X = df.drop('Air Quality', axis=1)
     y = df['Air Quality']
 
@@ -90,8 +116,15 @@ if __name__ == '__main__':
     Softmax.fit(X_train, y_train)
     print("Weights",Softmax.w)
 
-    probs, preds = Softmax.predict(X_test)
+    probs_test, preds_test = Softmax.predict(X_test)
+    probs_train, preds_train = Softmax.predict(X_train)
 
     #print(preds)
-    plt.plot(Softmax.losses)
-    plt.show()
+    #plt.plot(Softmax.losses)
+    #plt.show()
+
+    print("Train accuracy:",accuracy(y_train,preds_train))
+    print("Test accuracy:",accuracy(y_test,preds_test))
+
+    print("Train PR", precison_recall(y_train,preds_train))
+    print("Test PR", precison_recall(y_test,preds_test))
