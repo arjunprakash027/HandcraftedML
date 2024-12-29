@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 import kagglehub
 
-# Function to download the dataset, only for air quality mutlticlass classification dataset
+# Function to download the dataset, only for Target mutlticlass classification dataset
 def get_dataset() -> pd.DataFrame:
     path = kagglehub.dataset_download("mujtabamatin/air-quality-and-pollution-assessment")
     print("Path to dataset files:", path)
@@ -16,14 +16,16 @@ def generate_data(
         cols: int,
         classes: int
 ) -> pd.DataFrame:
-    
+
+    np.random.seed(42) 
     data = np.random.rand(rows,cols)
 
     columns = [f"Feature_{i+1}" for i in range(cols)]
 
+    random_classes = [f"Class_{i}" for i in range(1, classes + 1)]
     df = pd.DataFrame(data=data,columns=columns)
 
-    df['Target'] = np.random.randint(0,classes,size=rows)
+    df['Target'] = np.random.choice(random_classes,size=rows)
 
     return df
 
@@ -48,6 +50,7 @@ def precison_recall(actual:list,
         fp = np.sum((actual != cl) & (pred == cl))
         fn = np.sum((actual == cl) & (pred != cl))
 
+        print(tp,fp,fn)
         precision = (tp / (tp + fp))
         recall = (tp / (tp + fn))
 
@@ -72,6 +75,7 @@ class SoftmaxRegression:
     # Function to onehot encode the target variable for mutlticlass computation of gradient decent
     def one_hot_encode(self,
                      y:pd.Series) -> np.ndarray:
+        
         return np.eye(y.nunique())[y]
     
     def softmax(self,
@@ -83,6 +87,7 @@ class SoftmaxRegression:
         # You then take exponent of scores since its negative and sum it along each row 
         # You then divide each row with its transposed exponent to normalize it and transpose it back to give its original shape
         softmax_out = (np.exp(scores).T / np.sum(np.exp(scores), axis=1)).T 
+
         return softmax_out
 
     def fit(self,
@@ -98,6 +103,7 @@ class SoftmaxRegression:
         #print("Shape of x:", X.shape)
         for _ in range(self.n_epochs):
             score = np.dot(X, self.w)
+
             prob = self.softmax(score)
             
             #print(prob)
@@ -105,7 +111,6 @@ class SoftmaxRegression:
             self.losses.append(loss)
             grad = (-1 / m) * np.dot(X.T, (y_mat - prob)) + (self.l2 * self.w)
             
-            #print("Gradient",grad)
             self.w = self.w - (self.learning_rate * grad)
     
     def predict(self,
@@ -118,19 +123,20 @@ class SoftmaxRegression:
 
 if __name__ == '__main__':
     #df = get_dataset()
-    df = generate_data(rows=10000,
-                       cols=10,
-                       classes=5)
+    df = generate_data(rows=1000,
+                       cols=5,
+                       classes=4)
 
-    df = df.rename(columns={'Target':'Air Quality'})
+    #df = df.rename(columns={'Target':'Target'})
 
     # Preprocess the target output
-    target_list = df['Air Quality'].unique().tolist()
-    df['Air Quality'] = df['Air Quality'].apply(lambda x: target_list.index(x))
+    target_list = df['Target'].unique().tolist()
+    df['Target'] = df['Target'].apply(lambda x: target_list.index(x))
 
-    Softmax = SoftmaxRegression(learning_rate=1e-5, n_epochs=10000)
-    X = df.drop('Air Quality', axis=1)
-    y = df['Air Quality']
+
+    Softmax = SoftmaxRegression(learning_rate=1e-5, n_epochs=1000)
+    X = df.drop('Target', axis=1)
+    y = df['Target']
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
