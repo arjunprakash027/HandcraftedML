@@ -11,6 +11,22 @@ def get_dataset() -> pd.DataFrame:
     df = pd.read_csv(f"{path}/updated_pollution_dataset.csv")
     return df
 
+def generate_data(
+        rows: int,
+        cols: int,
+        classes: int
+) -> pd.DataFrame:
+    
+    data = np.random.rand(rows,cols)
+
+    columns = [f"Feature_{i+1}" for i in range(cols)]
+
+    df = pd.DataFrame(data=data,columns=columns)
+
+    df['Target'] = np.random.randint(0,classes,size=rows)
+
+    return df
+
 def accuracy(actual:list
              ,pred:list) -> float:
     actual = np.array(actual)
@@ -101,13 +117,18 @@ class SoftmaxRegression:
     
 
 if __name__ == '__main__':
-    df = get_dataset()
+    #df = get_dataset()
+    df = generate_data(rows=10000,
+                       cols=10,
+                       classes=5)
+
+    df = df.rename(columns={'Target':'Air Quality'})
 
     # Preprocess the target output
     target_list = df['Air Quality'].unique().tolist()
     df['Air Quality'] = df['Air Quality'].apply(lambda x: target_list.index(x))
 
-    Softmax = SoftmaxRegression(learning_rate=1e-5, n_epochs=50000)
+    Softmax = SoftmaxRegression(learning_rate=1e-5, n_epochs=10000)
     X = df.drop('Air Quality', axis=1)
     y = df['Air Quality']
 
