@@ -1,6 +1,6 @@
 # PPO Reinforcement Learning Environment
 
-This project is set up to run a Proximal Policy Optimization (PPO) agent using OpenAI Gym and PyTorch. To accommodate different development environments, this repository provides separate Docker configurations for Linux (with NVIDIA GPU support) and macOS (CPU-based).
+This project is set up to run a RL agents using OpenAI Gym and PyTorch. To accommodate different development environments, this repository provides separate Docker configurations for Linux (with NVIDIA GPU support) and macOS (CPU-based).
 
 ## Getting Started
 
