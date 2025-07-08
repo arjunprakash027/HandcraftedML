@@ -21,7 +21,8 @@ RUN pip install --no-cache-dir \
     "gym[box2d]" \
     "gym[atari]" \
     "gym[accept-rom-license]" \
-    tensorboard
+    tensorboard \
+    matplotlib
 
 # Copy the rest of the application's code to the container
 COPY . /app
