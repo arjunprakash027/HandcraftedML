@@ -1,0 +1,31 @@
+# Use an official PyTorch image with CUDA support as a parent image
+FROM pytorch/pytorch:2.3.0-cuda12.1-cudnn8-devel
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Install system dependencies for OpenAI Gym and other common libraries
+RUN apt-get update && apt-get install -y \
+    swig \
+    libz-dev \
+    libjpeg-dev \
+    libglew-dev \
+    libosmesa6-dev \
+    xvfb \
+    ffmpeg \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python dependencies
+RUN pip install --no-cache-dir \
+    gym \
+    "gym[box2d]" \
+    "gym[atari]" \
+    "gym[accept-rom-license]" \
+    tensorboard
+
+# Copy the rest of the application's code to the container
+COPY . /app
+
+# Keep the container running
+CMD ["tail", "-f", "/dev/null"]
+
