@@ -28,17 +28,6 @@ This setup enables GPU acceleration within the Docker container, which is highly
     ```bash
     docker-compose -f docker-compose.linux.yml up -d
     ```
-
-2.  **Access the Container**
-
-    To get an interactive shell inside the running container, execute:
-
-    ```bash
-    docker-compose -f docker-compose.linux.yml exec ppo bash
-    ```
-
-    You are now inside the `/app` directory of the container and can start executing your Python scripts.
-
 ---
 
 #### For macOS (CPU / MPS)
@@ -52,17 +41,6 @@ This setup uses a standard CPU-based environment. It is compatible with both Int
     ```bash
     docker-compose -f docker-compose.macos.yml up -d
     ```
-
-2.  **Access the Container**
-
-    To get an interactive shell inside the running container, execute:
-
-    ```bash
-    docker-compose -f docker-compose.macos.yml exec ppo bash
-    ```
-
-    You are now inside the `/app` directory of the container and can start executing your Python scripts.
-
 ---
 
 ### Stopping the Environment
