@@ -1,27 +1,19 @@
 
-FROM python:3.10-slim-buster
+FROM python:3.10-slim
 
 WORKDIR /app
 
-# Add your application code
 COPY . .
 
-# Minimal system dependencies for RL
-RUN apt-get update && apt-get install -y \
-    swig \
-    libz-dev \
-    libjpeg-dev \
-    libglew-dev \
-    libosmesa6-dev \
-    xvfb \
-    ffmpeg \
-    && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+      build-essential curl && \
+    rm -rf /var/lib/apt/lists/*
 
 # Install PyTorch CPU-only
-RUN pip install \
-    torch==2.7.1+cpu \
-    torchvision==0.18.1+cpu \
-    torchaudio==2.7.1+cpu --index-url https://download.pytorch.org/whl/cpu
+RUN pip install --no-cache-dir \
+    torch torchvision torchaudio \
+    --index-url https://download.pytorch.org/whl/cpu
 
 RUN pip install --no-cache-dir \
     gym \
@@ -31,4 +23,4 @@ RUN pip install --no-cache-dir \
     tensorboard \
     matplotlib
 
-COPY . /app
+CMD ["tail", "-f", "/dev/null"]
