@@ -17,9 +17,6 @@ RUN pip install --no-cache-dir \
 
 RUN pip install --no-cache-dir \
     gym \
-    "gym[box2d]" \
-    "gym[atari]" \
-    "gym[accept-rom-license]" \
     tensorboard \
     matplotlib
 
