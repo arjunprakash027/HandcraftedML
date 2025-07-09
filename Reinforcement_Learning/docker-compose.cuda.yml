@@ -3,7 +3,7 @@ services:
   rl-env:
     build:
       context: .
-      dockerfile: Dockerfile.linux
+      dockerfile: Dockerfile.cuda
     volumes:
       - .:/app
     deploy:

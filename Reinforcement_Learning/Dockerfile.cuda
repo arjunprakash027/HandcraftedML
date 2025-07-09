@@ -1,5 +1,5 @@
-# Use an official Python image
-FROM python:3.11-slim
+# Use an official PyTorch image with CUDA support as a parent image
+FROM pytorch/pytorch:2.3.0-cuda12.1-cudnn8-devel
 
 # Set the working directory in the container
 WORKDIR /app
@@ -17,16 +17,15 @@ RUN apt-get update && apt-get install -y \
 
 # Install Python dependencies
 RUN pip install --no-cache-dir \
-    torch \
     gym \
     "gym[box2d]" \
     "gym[atari]" \
     "gym[accept-rom-license]" \
-    tensorboard
+    tensorboard \
+    matplotlib
 
 # Copy the rest of the application's code to the container
 COPY . /app
 
 # Keep the container running
 CMD ["tail", "-f", "/dev/null"]
-
