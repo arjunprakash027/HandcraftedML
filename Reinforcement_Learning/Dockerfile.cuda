@@ -17,10 +17,7 @@ RUN apt-get update && apt-get install -y \
 
 # Install Python dependencies
 RUN pip install --no-cache-dir \
-    gym \
-    "gym[box2d]" \
-    "gym[atari]" \
-    "gym[accept-rom-license]" \
+    gymnasium \
     tensorboard \
     matplotlib
 
