@@ -6,6 +6,8 @@ services:
       dockerfile: Dockerfile.cuda
     volumes:
       - .:/app
+    ports:
+      - "6006:6006" #for tensorboard
     deploy:
       resources:
         reservations:

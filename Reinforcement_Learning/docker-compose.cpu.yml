@@ -5,5 +5,7 @@ services:
       dockerfile: Dockerfile.cpu
     volumes:
       - .:/app
+    ports:
+      - "6006:6006" # for tensorboard
     tty: true
     stdin_open: true
